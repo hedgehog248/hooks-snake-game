@@ -16,6 +16,15 @@ function App() {
     setPosition(initialPosition)
   }, [])
 
+  const goUp = () => {
+    const { x, y } = position
+    const nextY = Math.max(y - 1, 0)
+    fields[y][x] = ''
+    fields[nextY][x] = 'snake'
+    setPosition({ x, y: nextY })
+    setFields(fields)
+  }
+
   return (
     <div className="App">
       <header className='header'>
@@ -28,7 +37,9 @@ function App() {
       <main className='main'>
         <Field fields={fields} /> {/* 後ほどuseStateで定義する */}
       </main>
-
+      <div style={{ padding: '16px' }}>
+        <button onClick={goUp}>進む</button>
+      </div>
       <footer className='footer'>
         <Button />
         <ManipulationPanel />
