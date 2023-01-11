@@ -1,12 +1,21 @@
+import React, { useEffect, useState } from 'react';
 import Navigation from './components/Navigation';
 import Field from './components/Field';
 import Button from './components/Button';
 import ManipulationPanel from './components/ManipulationPanel';
 import { initFields } from './utils';
 
-const fields = initFields(35);
+const initialPosition = { x: 17, y: 17 }
+const initialValues = initFields(35, initialPosition)
 
 function App() {
+  const [fields, setFields] = useState(initialValues);
+  const [position, setPosition] = useState();
+
+  useEffect(() => {
+    setPosition(initialPosition)
+  }, [])
+
   return (
     <div className="App">
       <header className='header'>
