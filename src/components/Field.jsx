@@ -1,9 +1,15 @@
 import React from "react";
 
-const Field = () => {
+const Field = ({ fields }) => {
   return (
     <div className="field">
-      <p>field</p>
+      {
+        fields.map((row) => {
+          return row.map((column) => {
+            return <div className={`dots ${column}`}></div>
+          })
+        })
+      }
     </div>
   );
 };
