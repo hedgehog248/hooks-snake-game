@@ -9,6 +9,13 @@ const initialPosition = { x: 17, y: 17 };
 const initialValues = initFields(35, initialPosition);
 const defaultInterval = 100;
 
+const GameStatus = Object.freeze({
+  init: 'init',
+  playing: 'playing',
+  suspended: 'suspended',
+  gameover: 'gameover'
+});
+
 let timer = undefined;
 
 const unsubscribe = () => {
@@ -21,6 +28,7 @@ const unsubscribe = () => {
 function App() {
   const [fields, setFields] = useState(initialValues);
   const [position, setPosition] = useState();
+  const [status, setStatus] = useState(GameStatus.init);
   const [tick, setTick] = useState(0);
 
   useEffect(() => {
@@ -33,11 +41,13 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (!position) {
+    if (!position || status !== GameStatus.playing) {
       return
     };
     goUp();
   }, [tick]);
+
+  const onStart = () => setStatus(GameStatus.playing);
 
   const goUp = () => {
     const { x, y } = position
@@ -61,7 +71,7 @@ function App() {
         <Field fields={fields} /> {/* 後ほどuseStateで定義する */}
       </main>
       <footer className='footer'>
-        <Button />
+        <Button onStart={onStart} />
         <ManipulationPanel />
       </footer>
     </div>
