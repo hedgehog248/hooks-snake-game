@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Navigation from './components/Navigation';
 import Field from './components/Field';
 import Button from './components/Button';
@@ -23,6 +23,14 @@ const Direction = Object.freeze({
   right: 'right',
   left: 'left',
   down: 'down'
+});
+
+// キーコードのマップを定義
+const DirectionKeyCodeMap = Object.freeze({
+  37: Direction.left,
+  38: Direction.up,
+  39: Direction.right,
+  40: Direction.down,
 });
 
 // 進行方向と真逆の方向を定義
@@ -104,17 +112,34 @@ function App() {
   }
 
   // 進行方向を変える
-  const onChangeDirection = (newDirection) => {
-    // ゲームプレイ中かどうか
-    if (status !== GameStatus.playing) {
-      return direction
+  const onChangeDirection = useCallback(
+    (newDirection) => {
+      // ゲームプレイ中かどうか
+      if (status !== GameStatus.playing) {
+        return
+      };
+      // 進行方向と真逆の向きかどうか
+      if (OppositeDirection[direction] === newDirection) {
+        return
+      };
+      setDirection(newDirection);
+    },
+    [direction, status]
+  );
+
+  // キーボードが押されたときの処理
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      const newDirection = DirectionKeyCodeMap[e.keyCode];
+      if (!newDirection) {
+        return;
+      };
+      onChangeDirection(newDirection);
     };
-    // 進行方向と真逆の向きかどうか
-    if (OppositeDirection[direction] === newDirection) {
-      return
-    };
-    setDirection(newDirection);
-  }
+    document.addEventListener('keydown', handleKeyDown);
+    // イベントをクリーンにする関数をreturnで渡す（このクリーン関数はuseEffectが再実行される際に実行される）
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [onChangeDirection]);
 
   const handleMoving = () => {
     const { x, y } = position
