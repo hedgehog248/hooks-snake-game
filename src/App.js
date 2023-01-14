@@ -58,7 +58,7 @@ function App() {
   const [fields, setFields] = useState(initialValues);
   const [position, setPosition] = useState();
   const [status, setStatus] = useState(GameStatus.init);
-  const [direction, setDirection] = useState(Direction);
+  const [direction, setDirection] = useState(Direction.up);
   const [tick, setTick] = useState(0);
 
   useEffect(() => {
