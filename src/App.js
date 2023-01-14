@@ -33,6 +33,14 @@ const OppositeDirection = Object.freeze({
   down: 'up'
 });
 
+// 各進行方向における座標の変化量を定義
+const Delta = Object.freeze({
+  up: { x: 0, y: -1 },
+  right: { x: 1, y: 0 },
+  left: { x: -1, y: 0 },
+  down: { x: 0, y: 1 },
+});
+
 let timer = undefined;
 
 // タイマーを止める関数
@@ -76,7 +84,7 @@ function App() {
       return
     };
     // 以下ゲーム続行可能の処理
-    const canContinue = goUp();
+    const canContinue = handleMoving();
     // canContinueがfalseのときの処理
     if (!canContinue) {
       setStatus(GameStatus.gameover);
@@ -108,15 +116,19 @@ function App() {
     setDirection(newDirection);
   }
 
-  const goUp = () => {
+  const handleMoving = () => {
     const { x, y } = position
-    const newPosition = { x, y: y - 1 };
+    const delta = Delta[direction];
+    const newPosition = {
+      x: x + delta.x,
+      y: y + delta.y
+    };
     if (isCollision(fields.length, newPosition)) {
       unsubscribe();
       return false;
     };
     fields[y][x] = ''
-    fields[newPosition.y][x] = 'snake';
+    fields[newPosition.y][newPosition.x] = 'snake';
     setPosition(newPosition);
     setFields(fields)
     return true;
