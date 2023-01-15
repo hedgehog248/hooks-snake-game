@@ -3,7 +3,7 @@ import Navigation from './components/Navigation';
 import Field from './components/Field';
 import Button from './components/Button';
 import ManipulationPanel from './components/ManipulationPanel';
-import { initFields } from './utils';
+import { initFields, getFoodPosition } from './utils';
 
 const initialPosition = { x: 17, y: 17 };
 const initialValues = initFields(35, initialPosition);
@@ -72,13 +72,13 @@ const isCollision = (fieldSize, position) => {
 
 function App() {
   const [fields, setFields] = useState(initialValues);
-  const [position, setPosition] = useState();
+  const [body, setBody] = useState([]);
   const [status, setStatus] = useState(GameStatus.init);
   const [direction, setDirection] = useState(Direction.up);
   const [tick, setTick] = useState(0);
 
   useEffect(() => {
-    setPosition(initialPosition);
+    setBody([initialPosition]);
     // ゲームの中の時間を管理する
     timer = setInterval(() => {
       setTick(tick => tick + 1)
@@ -88,7 +88,7 @@ function App() {
 
   useEffect(() => {
     // positionがnullまたはstatusがplaying以外のときは早期returnを返す
-    if (!position || status !== GameStatus.playing) {
+    if (body.length === 0 || status !== GameStatus.playing) {
       return
     };
     // 以下ゲーム続行可能の処理
@@ -106,7 +106,7 @@ function App() {
       setTick(tick => tick + 1)
     }, defaultInterval);
     setStatus(GameStatus.init);
-    setPosition(initialPosition);
+    setBody([initialPosition]);
     setDirection(Direction.up);
     setFields(initFields(35, initialPosition))
   }
@@ -142,7 +142,7 @@ function App() {
   }, [onChangeDirection]);
 
   const handleMoving = () => {
-    const { x, y } = position
+    const { x, y } = body[0]
     const delta = Delta[direction];
     const newPosition = {
       x: x + delta.x,
@@ -152,10 +152,25 @@ function App() {
       unsubscribe();
       return false;
     };
-    fields[y][x] = ''
-    fields[newPosition.y][newPosition.x] = 'snake';
-    setPosition(newPosition);
-    setFields(fields)
+
+    // pop,unshift(破壊的メソッド)の前にスプレッド構文でステートをコピーしておく
+    // useStateで得る更新関数以外で直接ステートの更新をしないようにするため
+    const newBody = [...body];
+    // 先頭がfoodかどうか
+    if (fields[newPosition.y][newPosition.x] !== 'food') {
+      // foodじゃないときはbodyを伸ばさない
+      const removingTrack = newBody.pop();                 // 末尾の配列を取り出して削除する
+      fields[removingTrack.y][removingTrack.x] = '';       // 削除された配列の座標に空文字をいれる
+    } else {
+      // foodのときは新しいfoodを作る
+      const food = getFoodPosition(fields.length, [...newBody, newPosition]);
+      fields[food.y][food.x] = 'food';
+    }
+    fields[newPosition.y][newPosition.x] = 'snake'; // snakeを一歩前へ伸ばす
+    newBody.unshift(newPosition);                   // 配列の先頭に要素を追加する
+
+    setBody(newBody); // コピーし編集した配列でステートを更新する
+    setFields(fields);
     return true;
   }
 

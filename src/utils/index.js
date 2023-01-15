@@ -1,4 +1,4 @@
-const getFoodPosition = (fieldSize, excludes) => {
+export const getFoodPosition = (fieldSize, excludes) => {
   while (true) {
     // fieldSizeの一番外側から1マス内側でランダムな座標を取得
     const x = Math.floor(Math.random() * (fieldSize - 1 - 1)) + 1;
