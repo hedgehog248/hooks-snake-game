@@ -38,9 +38,27 @@ body {
   background: #0f1d1d;
 }
 
+.title-container {
+  border-radius: 4px 4px 0 0;
+  /* 影を３種重ねて凹凸を表現 */
+  box-shadow: 0px 4px 1px 1px #97A5A5, 0 6px 1px 1px #3C4A4A, 0 0 1px 1px #3C4A4A;
+}
+
+.title {
+  margin: 0;
+  padding: 8px;
+  font-size: 1.1 rem;
+}
+
 .field {
   display: flex;
   flex-wrap: wrap;
+  margin-top: 2px;
+  color: white;
+  background: #0f1d1d;
+  border-radius: 0 0 4px 4px;
+  border: 1px solid #ffffff30;
+  box-shadow: 0px 4px 1px 1px #0C1818, 0px 6px 1px 1px #060F0D;
 }
 
 .snake {
