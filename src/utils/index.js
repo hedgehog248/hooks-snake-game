@@ -24,3 +24,21 @@ export const initFields = (fieldSize, snake) => {
 
   return fields // 作成した配列を返却
 }
+
+// 壁にぶつかったかを判定
+export const isCollision = (fieldSize, position) => {
+  if (position.y < 0 || position.x < 0) {
+    // x, yのどちらかの座標が−の値のとき
+    return true;
+  }
+  if (position.y > fieldSize - 1 || position.x > fieldSize - 1) {
+    // s, yのどちらかの座標がフィールドサイズを超えてしまっているとき
+    return true;
+  }
+  return false;
+};
+
+// 自分を食べてしまった場合の処理
+export const isEatingMyself = (fields, position) => {
+  return fields[position.y][position.x] === 'snake';
+}

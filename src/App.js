@@ -27,22 +27,6 @@ const unsubscribe = () => {
   clearInterval(timer); // clearIntervalでタイマーを削除する
 }
 
-// 壁にぶつかったかの判定
-const isCollision = (fieldSize, position) => {
-  if (position.y < 0 || position.x < 0) {
-    return true;
-  }
-  if (position.y > fieldSize - 1 || position.x > fieldSize - 1) {
-    return true;
-  }
-  return false;
-};
-
-// 自分を食べてしまった場合の処理
-const isEatingMyself = (fields, position) => {
-  return fields[position.y][position.x] === 'snake';
-}
-
 function App() {
   const [fields, setFields] = useState(initialValues);
   const [body, setBody] = useState([]);
